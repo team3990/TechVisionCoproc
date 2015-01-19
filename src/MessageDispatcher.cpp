@@ -15,7 +15,8 @@
 void Listen(void *arg){
 
 	MessageDispatcher *dispatcher=(MessageDispatcher*)arg;
-	printf("Listening\n");
+	std::cout "Listening" << std::endl;
+
 	while(1){
 
         zmq::message_t request;
@@ -26,13 +27,13 @@ void Listen(void *arg){
         std::cout << "Received " << command << std::endl;
         {
 	  lock_guard<mutex> guard(dispatcher->m_oCmdMutex);
-	  dispatcher->m_vCommands.push_back(command);
+	  dispatcher->m_listCommands.push_back(command);
 	}
 //        zmq::message_t reply (5);
   //             memcpy ((void *) reply.data (), "World", 5);
     //           dispatcher->m_pSocket->send (reply);
         //  Do some 'work'
-    	sleep(1);
+    	usleep(1000);  // not necessary?
 
 	}
 
@@ -63,7 +64,27 @@ void MessageDispatcher::StartListening()
 bool MessageDispatcher::CheckForIncomingMsg()
 {
    lock_guard<mutex> guard(m_oCmdMutex);
-	if(m_vCommands.size()>0)
+	if(m_listCommands.size()>0)
 	  return true;
 return false;
+}
+
+bool MessageDispatcher::RetrieveMsg(std::string& msg)
+{
+	msg="";
+	if(m_listCommands.size()>0){
+		msg=m_listCommands.front();
+		m_listCommands.pop_front();
+		return true;
+	}
+	return false;
+}
+
+void MessageDispatcher::SendBackResponse(std::string origmsg, std::string response)
+{
+	std::string fullmsg=origmsg + "=>" + response;
+
+	zmq::message_t reply (fullmsg.size());
+	memcpy ((void *) reply.data (), fullmsg.c_str(), fullmsg.size());
+	m_pSocket->send (reply);
 }

@@ -16,3 +16,12 @@ CommandProcessor::~CommandProcessor() {
 	// TODO Auto-generated destructor stub
 }
 
+bool CommandProcessor::IsJobCompleted(){
+
+	return false;
+}
+
+void CommandProcessor::GetJobResults(std::string& origmsg, std::string& response)
+{
+
+}

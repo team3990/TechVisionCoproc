@@ -8,7 +8,7 @@
 #ifndef MESSAGEDISPATCHER_H_
 #define MESSAGEDISPATCHER_H_
 
-#include <vector>
+#include <list>
 #include <string>
 #include "zmq.hpp"
 #include "tinythread.h"
@@ -22,13 +22,14 @@ public:
 	virtual ~MessageDispatcher();
 	void StartListening();
 	bool CheckForIncomingMsg();
+	void SendBackResponse(std::string origmsg,std::string response);
 
 
 	zmq::socket_t *m_pSocket;
 private:
 	zmq::context_t *m_pContext;
 	thread *m_pListeningThread;
-	std::vector<std::string> m_vCommands;
+	std::list<std::string> m_listCommands;
         mutex m_oCmdMutex;
 };
 

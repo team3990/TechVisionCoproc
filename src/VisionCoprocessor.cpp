@@ -5,6 +5,7 @@
 // Copyright   : Your copyright notice
 // Description : Hello World in C++, Ansi-style
 //============================================================================
+#include <unistd.h>
 #include "MessageDispatcher.h"
 #include "CommandProcessor.h"
 
@@ -22,9 +23,19 @@ int main() {
 
 		if(dispatcher.CheckForIncomingMsg()) {
 
-
+			std::string msg;
+			if(dispatcher.RetrieveMsg(msg)) {
+				cmdprocessor.ProcessCmd(msg);
+			}
 		}
-		sleep(20);
+
+		if(cmdprocessor.IsJobCompleted()){
+			std::string origmsg,response;
+			cmdprocessor.GetJobResults(origmsg,response);
+			dispatcher.SendBackResponse(origmsg,response);
+		}
+
+		usleep(1000);
 	}
 
 
