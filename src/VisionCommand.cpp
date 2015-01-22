@@ -7,12 +7,12 @@
 
 #include "VisionCommand.h"
 
-VisionCommand::VisionCommand(CommandProcessor *processor) {
-	m_pCmdProcessor=processor;
-
+VisionCommand::VisionCommand() {
+	m_pCmdProcessor= NULL;
+	m_sResult.clear();
 }
 
 VisionCommand::~VisionCommand() {
-	// TODO Auto-generated destructor stub
+	SendBackResponse();
 }
 
