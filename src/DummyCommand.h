@@ -12,9 +12,11 @@
 
 class DummyCommand: public VisionCommand {
 public:
-	DummyCommand();
+	DummyCommand(int mode);
 	virtual ~DummyCommand();
 	virtual void Execute();
+private:
+	int m_nMode;  //1=short exec (50ms), 2=long exec (2s)
 };
 
 #endif /* DUMMYCOMMAND_H_ */

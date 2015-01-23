@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include "CommandProcessor.h"
 #include "DummyCommand.h"
-
+#include "config.h"
 
 CommandProcessor::CommandProcessor() {
 	m_pCmdProcessingThread=NULL;
@@ -15,19 +15,22 @@ CommandProcessor::CommandProcessor() {
 	m_pCameraManager=new CameraManager;
 
 	// Register available commands
-	m_mapCommandsAvailable["kill"]=  KILLALL;
-	m_mapCommandsAvailable["status"]=     DIAG;
+	m_mapCommandsAvailable["reset"]=  RESET;
+	m_mapCommandsAvailable["status"]=     STATUS;
 	m_mapCommandsAvailable["saveimg1"]= SAVEIMG1;
 	m_mapCommandsAvailable["saveimg2"]= SAVEIMG2;
-	m_mapCommandsAvailable["q_detectyote"]= Q_DETECT_YOTE;
-	m_mapCommandsAvailable["q_detectplatform"]= Q_DETECT_PLATFORM;
-	m_mapCommandsAvailable["q_test"]= Q_TEST;
+	m_mapCommandsAvailable["detectyote"]= DETECT_YOTE;
+	m_mapCommandsAvailable["detectplatform"]= DETECT_PLATFORM;
+	m_mapCommandsAvailable["test"]= TEST;
+	m_mapCommandsAvailable["longtest"]= TEST2;
 	m_mapCommandsAvailable["r_detectyote"]= R_DETECT_YOTE;
 	m_mapCommandsAvailable["r_detectplatform"]= R_DETECT_PLATFORM;
 	m_mapCommandsAvailable["r_test"]= R_TEST;
-	m_mapQueriesCommands["r_detectyote"]="q_detectyote";
-	m_mapQueriesCommands["r_detectplatform"]="q_detectplatform";
-	m_mapQueriesCommands["r_test"]="q_test";
+	m_mapCommandsAvailable["r_longtest"]= R_TEST2;
+	m_mapQueriesCommands["r_detectyote"]="detectyote";
+	m_mapQueriesCommands["r_detectplatform"]="detectplatform";
+	m_mapQueriesCommands["r_test"]="test";
+	m_mapQueriesCommands["r_longtest"]="longtest";
 }
 
 CommandProcessor::~CommandProcessor() {
@@ -35,7 +38,7 @@ CommandProcessor::~CommandProcessor() {
 }
 
 std::string CommandProcessor::GetStatus() {
-	std::string status="Command processor status:\n";
+	std::string status="Command processor status:\nVersion "+ std::string(VERSION) + "\nImage dump location: "+ std::string(IMAGE_DUMP_LOCATION) +"\n";
 
 	std::map<std::string,std::string>::iterator iter;
 	char str[1024];
@@ -62,18 +65,15 @@ int CommandProcessor::GetCommandCodeFromString(std::string strcommand)
 
 
 void LaunchExecution(void *arg){
-  VisionCommand *pCmd=(VisionCommand*)arg;
-  pCmd->Execute();
+	VisionCommand *pCmd=(VisionCommand*)arg;
+	pCmd->Execute();
 
-  delete pCmd; // Upon deletion, result is sent back to CommandProcessor
+	delete pCmd; // Upon deletion, result is sent back to CommandProcessor
 }
 
 void CommandProcessor::ProcessCmd(std::string command, std::string& response)
 {
 	int nCommandCode= GetCommandCodeFromString(command);
-
-	printf("CP: processing %s\n",command.c_str());
-
 
 	VisionCommand *pCommandObj=NULL;
 
@@ -84,14 +84,14 @@ void CommandProcessor::ProcessCmd(std::string command, std::string& response)
 		response="Unknown command";
 		break;
 
-	case KILLALL:
+	case RESET:
 		if(m_pCmdProcessingThread)
 			delete m_pCmdProcessingThread;
 		m_pCmdProcessingThread= NULL;
 		m_mapCommandsResponses.clear();
-		response="Command killed";
+		response="Done";
 		break;
-	case DIAG:
+	case STATUS:
 
 		response=GetStatus()+m_pCameraManager->GetStatus();
 		break;
@@ -110,14 +110,18 @@ void CommandProcessor::ProcessCmd(std::string command, std::string& response)
 	case SAVEIMG2:
 		response="todo";
 		break;
-	case Q_TEST:
-		pCommandObj=new DummyCommand;
+	case TEST:
+		pCommandObj=new DummyCommand(1);
+		response="Started";
+		break;
+	case TEST2:
+		pCommandObj=new DummyCommand(2);
+		response="Running";
+		break;
+	case DETECT_YOTE:
 		response="todo";
 		break;
-	case Q_DETECT_YOTE:
-		response="todo";
-		break;
-	case Q_DETECT_PLATFORM:
+	case DETECT_PLATFORM:
 		response="todo";
 		break;
 	}
@@ -135,7 +139,6 @@ void CommandProcessor::ProcessCmd(std::string command, std::string& response)
 		if(pCommandObj){
 			pCommandObj->SetContext(command,this,m_pCameraManager,NULL);
 			m_mapCommandsResponses[command]="Still thinking";
-			printf("Launching %s\n",command.c_str());
 			m_pCmdProcessingThread = new thread(LaunchExecution, (void *) pCommandObj);
 		}
 		return;
@@ -144,6 +147,7 @@ void CommandProcessor::ProcessCmd(std::string command, std::string& response)
 
 	switch(nCommandCode){
 	case R_TEST:
+	case R_TEST2:
 	case R_DETECT_YOTE:
 	case R_DETECT_PLATFORM:
 		response=m_mapCommandsResponses[m_mapQueriesCommands[command]];
@@ -154,6 +158,6 @@ void CommandProcessor::ProcessCmd(std::string command, std::string& response)
 	}
 
 	if(response.empty())
-		response="error";
+		response="Error";
 
 }

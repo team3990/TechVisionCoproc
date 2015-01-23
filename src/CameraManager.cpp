@@ -6,6 +6,7 @@
  */
 
 #include "CameraManager.h"
+#include "config.h"
 
 CameraManager::CameraManager() {
 	m_oVideoCap1.open(0);

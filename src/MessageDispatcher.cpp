@@ -8,7 +8,7 @@
 #include <string>
 #include <iostream>
 #include <unistd.h>
-
+#include "config.h"
 
 #include "MessageDispatcher.h"
 
@@ -32,7 +32,8 @@ void Listen(void *arg){
 				{
 					std::string response;
 					dispatcher->TransferToCommandProcessor(command,response);
-					dispatcher->SendBackResponse(command+"=>"+response);
+					//dispatcher->SendBackResponse(command+"=>"+response);   // Specifying initial command not useful here
+					dispatcher->SendBackResponse(response);
 			  	}
         }
     	usleep(1000);  // not necessary?
@@ -47,7 +48,9 @@ MessageDispatcher::MessageDispatcher(CommandProcessor *p) {
     //  Prepare our context and socket
     m_pContext =new zmq::context_t(1);
     m_pSocket =new zmq::socket_t(*m_pContext, ZMQ_REP);
-    m_pSocket->bind ("tcp://*:5555");
+    char str[64];
+    sprintf(str,"tcp://*:%d",COMM_PORT);
+    m_pSocket->bind (str);
     m_pCmdProcessor= p;
     m_pListeningThread= NULL;
 
