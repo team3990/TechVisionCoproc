@@ -33,17 +33,17 @@ protected:
 	// Called by derived objects for logging traces
 	void LogTrace(char *format,...);
 
+	CommandProcessor *m_pCmdProcessor; // borrowed, do not delete
+	CameraManager *m_pCameraManager;  // borrowed, do not delete
+	FILE *m_pLogFile;
+
 private:
 	void SendBackResponse(){
 		if(m_pCmdProcessor && m_sResult.size()>0){
-			printf("visioncommand trying to send back result\n");
 			m_pCmdProcessor->StoreResponse(m_sCommand,m_sResult);
 		}
 	}
 
-	CommandProcessor *m_pCmdProcessor; // borrowed, do not delete
-	CameraManager *m_pCameraManager;  // borrowed, do not delete
-	FILE *m_pLogFile;
 	std::string m_sResult;
 	std::string m_sCommand;
 };

@@ -8,7 +8,8 @@
 #include "CameraManager.h"
 
 CameraManager::CameraManager() {
-	// TODO Auto-generated constructor stub
+	m_oVideoCap1.open(0);
+	m_oVideoCap2.open(1);
 
 }
 

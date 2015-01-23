@@ -22,15 +22,7 @@ public:
 	MessageDispatcher(CommandProcessor *p);
 	virtual ~MessageDispatcher();
 	void StartListening();
-	//bool CheckForIncomingMsg();
 	void SendBackResponse(std::string response);
-	//bool RetrieveMsg(std::string& msg);
-	/*
-	void AddCommand(std::string cmd){
-		lock_guard<mutex> guard(m_oCmdMutex);
-		printf("pushing %s\n",cmd.c_str());
-		m_listCommands.push_back(cmd);
-	}*/
 	void TransferToCommandProcessor(std::string command,std::string& response)
 	{
 		response="error";
@@ -41,7 +33,6 @@ public:
 
 	zmq::socket_t *m_pSocket;
     mutex m_oCmdMutex;
-    mutex m_oSocketMutex;
     CommandProcessor *m_pCmdProcessor;
 private:
 	zmq::context_t *m_pContext;

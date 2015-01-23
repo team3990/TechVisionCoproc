@@ -6,32 +6,28 @@
  */
 #include <stdio.h>
 #include "CommandProcessor.h"
-#include "DiagCommand.h"
+#include "DummyCommand.h"
 
 
 CommandProcessor::CommandProcessor() {
 	m_pCmdProcessingThread=NULL;
-	m_bBusy= false;
 	m_pCommandToProcess= NULL;
 	m_pCameraManager=new CameraManager;
 
 	// Register available commands
-	m_mapCommandsAvailable["killall"]=  KILLALL;
+	m_mapCommandsAvailable["kill"]=  KILLALL;
 	m_mapCommandsAvailable["status"]=     DIAG;
 	m_mapCommandsAvailable["saveimg1"]= SAVEIMG1;
 	m_mapCommandsAvailable["saveimg2"]= SAVEIMG2;
-	m_mapCommandsAvailable["detectyote"]= DETECT_YOTE;
-	m_mapCommandsAvailable["detectplatform"]= DETECT_PLATFORM;
-	m_mapCommandsAvailable["q_diag"]= Q_DIAG;
-	m_mapCommandsAvailable["q_saveimg1"]= Q_SAVEIMG1;
-	m_mapCommandsAvailable["q_saveimg2"]= Q_SAVEIMG2;
 	m_mapCommandsAvailable["q_detectyote"]= Q_DETECT_YOTE;
 	m_mapCommandsAvailable["q_detectplatform"]= Q_DETECT_PLATFORM;
-	m_mapQueriesCommands["q_diag"]="diag";
-	m_mapQueriesCommands["q_saveimg1"]="saveimg1";
-	m_mapQueriesCommands["q_saveimg2"]="saveimg2";
-	m_mapQueriesCommands["q_detectyote"]="detectyote";
-	m_mapQueriesCommands["q_detectplatform"]="detectplatform";
+	m_mapCommandsAvailable["q_test"]= Q_TEST;
+	m_mapCommandsAvailable["r_detectyote"]= R_DETECT_YOTE;
+	m_mapCommandsAvailable["r_detectplatform"]= R_DETECT_PLATFORM;
+	m_mapCommandsAvailable["r_test"]= R_TEST;
+	m_mapQueriesCommands["r_detectyote"]="q_detectyote";
+	m_mapQueriesCommands["r_detectplatform"]="q_detectplatform";
+	m_mapQueriesCommands["r_test"]="q_test";
 }
 
 CommandProcessor::~CommandProcessor() {
@@ -75,15 +71,11 @@ void LaunchExecution(void *arg){
 void CommandProcessor::ProcessCmd(std::string command, std::string& response)
 {
 	int nCommandCode= GetCommandCodeFromString(command);
-	//static int token=1; // not 0 (reserved)
 
-
-printf("CP: processing %s\n",command.c_str());
+	printf("CP: processing %s\n",command.c_str());
 
 
 	VisionCommand *pCommandObj=NULL;
-	//m_mapTokensCommands[token]=command;
-
 
 	response.clear();
 
@@ -96,9 +88,6 @@ printf("CP: processing %s\n",command.c_str());
 		if(m_pCmdProcessingThread)
 			delete m_pCmdProcessingThread;
 		m_pCmdProcessingThread= NULL;
-		//m_listResponses.clear();
-		//m_mapTokensCommands.clear();
-		//m_bBusy= false;
 		m_mapCommandsResponses.clear();
 		response="Command killed";
 		break;
@@ -106,7 +95,6 @@ printf("CP: processing %s\n",command.c_str());
 
 		response=GetStatus()+m_pCameraManager->GetStatus();
 		break;
-
 	}
 
 	if(response.empty()==false)
@@ -122,11 +110,14 @@ printf("CP: processing %s\n",command.c_str());
 	case SAVEIMG2:
 		response="todo";
 		break;
-	case DETECT_YOTE:
-		pCommandObj=new DiagCommand;
+	case Q_TEST:
+		pCommandObj=new DummyCommand;
 		response="todo";
 		break;
-	case DETECT_PLATFORM:
+	case Q_DETECT_YOTE:
+		response="todo";
+		break;
+	case Q_DETECT_PLATFORM:
 		response="todo";
 		break;
 	}
@@ -152,11 +143,9 @@ printf("CP: processing %s\n",command.c_str());
 
 
 	switch(nCommandCode){
-	case Q_DIAG:
-	case Q_SAVEIMG1:
-	case Q_SAVEIMG2:
-	case Q_DETECT_YOTE:
-	case Q_DETECT_PLATFORM:
+	case R_TEST:
+	case R_DETECT_YOTE:
+	case R_DETECT_PLATFORM:
 		response=m_mapCommandsResponses[m_mapQueriesCommands[command]];
 		if(response.compare("Still thinking")!=0)
 			m_mapCommandsResponses.erase(m_mapQueriesCommands[command]);
@@ -167,5 +156,4 @@ printf("CP: processing %s\n",command.c_str());
 	if(response.empty())
 		response="error";
 
-	printf("response is %s\n",response.c_str());
 }
