@@ -5,6 +5,7 @@
  *      Author: odroid
  */
 #include <stdio.h>
+#include <opencv2/opencv.hpp>
 #include "CommandProcessor.h"
 #include "DummyCommand.h"
 #include "config.h"
@@ -19,18 +20,14 @@ CommandProcessor::CommandProcessor() {
 	m_mapCommandsAvailable["status"]=     STATUS;
 	m_mapCommandsAvailable["saveimg1"]= SAVEIMG1;
 	m_mapCommandsAvailable["saveimg2"]= SAVEIMG2;
-	m_mapCommandsAvailable["detectyote"]= DETECT_YOTE;
-	m_mapCommandsAvailable["detectplatform"]= DETECT_PLATFORM;
 	m_mapCommandsAvailable["test"]= TEST;
 	m_mapCommandsAvailable["longtest"]= TEST2;
-	m_mapCommandsAvailable["r_detectyote"]= R_DETECT_YOTE;
-	m_mapCommandsAvailable["r_detectplatform"]= R_DETECT_PLATFORM;
 	m_mapCommandsAvailable["r_test"]= R_TEST;
 	m_mapCommandsAvailable["r_longtest"]= R_TEST2;
-	m_mapQueriesCommands["r_detectyote"]="detectyote";
-	m_mapQueriesCommands["r_detectplatform"]="detectplatform";
 	m_mapQueriesCommands["r_test"]="test";
 	m_mapQueriesCommands["r_longtest"]="longtest";
+
+	m_pCameraManager->StartCapturing();
 }
 
 CommandProcessor::~CommandProcessor() {
@@ -105,7 +102,8 @@ void CommandProcessor::ProcessCmd(std::string command, std::string& response)
 	switch(nCommandCode){
 
 	case SAVEIMG1:
-		response="todo";
+		cv::imwrite("test.png",m_pCameraManager->GetFrame(0));
+		response="test.png saved";
 		break;
 	case SAVEIMG2:
 		response="todo";
@@ -116,14 +114,9 @@ void CommandProcessor::ProcessCmd(std::string command, std::string& response)
 		break;
 	case TEST2:
 		pCommandObj=new DummyCommand(2);
-		response="Running";
+		response="Started";
 		break;
-	case DETECT_YOTE:
-		response="todo";
-		break;
-	case DETECT_PLATFORM:
-		response="todo";
-		break;
+
 	}
 
 	if(response.empty()==false){
@@ -148,8 +141,6 @@ void CommandProcessor::ProcessCmd(std::string command, std::string& response)
 	switch(nCommandCode){
 	case R_TEST:
 	case R_TEST2:
-	case R_DETECT_YOTE:
-	case R_DETECT_PLATFORM:
 		response=m_mapCommandsResponses[m_mapQueriesCommands[command]];
 		if(response.compare("Still thinking")!=0)
 			m_mapCommandsResponses.erase(m_mapQueriesCommands[command]);
