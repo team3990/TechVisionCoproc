@@ -8,6 +8,7 @@
 #include <opencv2/opencv.hpp>
 #include "CommandProcessor.h"
 #include "DummyCommand.h"
+#include "ImgSaveCommand.h"
 #include "config.h"
 
 CommandProcessor::CommandProcessor() {
@@ -26,6 +27,10 @@ CommandProcessor::CommandProcessor() {
 	m_mapCommandsAvailable["r_longtest"]= R_TEST2;
 	m_mapQueriesCommands["r_test"]="test";
 	m_mapQueriesCommands["r_longtest"]="longtest";
+	m_mapCommandsAvailable["r_saveimg1"]= R_SAVEIMG1;
+	m_mapCommandsAvailable["r_saveimg2"]= R_SAVEIMG2;
+	m_mapQueriesCommands["r_saveimg1"]="saveimg1";
+	m_mapQueriesCommands["r_saveimg2"]="saveimg2";
 
 	m_pCameraManager->StartCapturing();
 }
@@ -102,11 +107,12 @@ void CommandProcessor::ProcessCmd(std::string command, std::string& response)
 	switch(nCommandCode){
 
 	case SAVEIMG1:
-		cv::imwrite("test.png",m_pCameraManager->GetFrame(0));
-		response="test.png saved";
+		pCommandObj= new ImgSaveCommand(std::string(IMAGE_DUMP_LOCATION),0);
+		response="Saving";
 		break;
 	case SAVEIMG2:
-		response="todo";
+		pCommandObj= new ImgSaveCommand(std::string(IMAGE_DUMP_LOCATION),1);
+		response="Saving";
 		break;
 	case TEST:
 		pCommandObj=new DummyCommand(1);
@@ -141,6 +147,8 @@ void CommandProcessor::ProcessCmd(std::string command, std::string& response)
 	switch(nCommandCode){
 	case R_TEST:
 	case R_TEST2:
+	case R_SAVEIMG1:
+	case R_SAVEIMG2:
 		response=m_mapCommandsResponses[m_mapQueriesCommands[command]];
 		if(response.compare("Still thinking")!=0)
 			m_mapCommandsResponses.erase(m_mapQueriesCommands[command]);
