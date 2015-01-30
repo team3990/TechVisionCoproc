@@ -26,7 +26,8 @@ public:
 
 	cv::Mat GetFrame(int nCameraNo);
 	void StartCapturing();
-
+	bool KeepCapturing(){ return m_bKeepCapturing;}
+    void StopCapturing(){ m_bKeepCapturing=false;}
 	std::string GetStatus(){
 		std::string response="Camera manager: ";
 		bool bConnected=false;
@@ -51,7 +52,7 @@ private:
 	cv::VideoCapture m_oVideoCap1, m_oVideoCap2;
 	cv::Mat m_oCurrentFrame1;
 	cv::Mat m_oCurrentFrame2;
-
+	bool m_bKeepCapturing;
 
 
 };

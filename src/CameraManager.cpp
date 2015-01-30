@@ -12,8 +12,10 @@
 CameraManager::CameraManager() {
 	m_oVideoCap1.open(0);
 	m_oVideoCap2.open(1);
+
 m_pCap1Thread=NULL;
 m_pCap2Thread=NULL;
+m_bKeepCapturing= true;
 
 }
 
@@ -34,6 +36,10 @@ void CaptureFramesCam1(void* p)
 				lock_guard<mutex>(cammgr->m_oCam1Mutex);
 				cammgr->m_oVideoCap1 >> cammgr->m_oCurrentFrame1;
 			}
+
+			if(cammgr->KeepCapturing()==false)
+				break;
+
 			usleep(1000);
 		}
 
@@ -48,6 +54,9 @@ void CaptureFramesCam2(void* p)
 				lock_guard<mutex>(cammgr->m_oCam2Mutex);
 				cammgr->m_oVideoCap2 >> cammgr->m_oCurrentFrame2;
 			}
+			if(cammgr->KeepCapturing()==false)
+				break;
+
 			usleep(1000);
 		}
 

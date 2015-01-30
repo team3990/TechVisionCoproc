@@ -36,6 +36,9 @@ public:
 		m_mapCommandsResponses[cmd]=result;
 	}
 	std::string GetStatus();
+	void StopCapture(){
+		m_pCameraManager->StopCapturing();
+	}
 
 private:
 	int GetCommandCodeFromString(std::string strcommand);
