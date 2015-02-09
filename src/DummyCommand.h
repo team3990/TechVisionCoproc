@@ -19,4 +19,15 @@ private:
 	int m_nMode;  //1=short exec (50ms), 2=long exec (2s)
 };
 
+
+class BWCommand: public VisionCommand {
+public:
+	BWCommand(){}
+	virtual ~BWCommand(){}
+	virtual void Execute();
+
+
+};
+
+
 #endif /* DUMMYCOMMAND_H_ */

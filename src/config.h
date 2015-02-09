@@ -14,7 +14,8 @@
 // Used by message dispatcher
 #define COMM_PORT   5555
 
-#define VERSION "1.0"
+#define VERSION "2015"
 
+//#define USE_OPENCV_FOR_CAPTURE
 
 #endif /* CONFIG_H_ */

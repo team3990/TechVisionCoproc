@@ -25,7 +25,12 @@ CommandProcessor::CommandProcessor() {
 	m_mapCommandsAvailable["longtest"]= TEST2;
 	m_mapCommandsAvailable["r_test"]= R_TEST;
 	m_mapCommandsAvailable["r_longtest"]= R_TEST2;
+	m_mapCommandsAvailable["bw"]= BW;
+	m_mapCommandsAvailable["r_bw"]= R_BW;
+
+
 	m_mapQueriesCommands["r_test"]="test";
+	m_mapQueriesCommands["r_bw"]="bw";
 	m_mapQueriesCommands["r_longtest"]="longtest";
 	m_mapCommandsAvailable["r_saveimg1"]= R_SAVEIMG1;
 	m_mapCommandsAvailable["r_saveimg2"]= R_SAVEIMG2;
@@ -123,6 +128,11 @@ void CommandProcessor::ProcessCmd(std::string command, std::string& response)
 		response="Started";
 		break;
 
+	case BW:
+		pCommandObj=new BWCommand();
+		response="Started";
+		break;
+
 	}
 
 	if(response.empty()==false){
@@ -149,11 +159,14 @@ void CommandProcessor::ProcessCmd(std::string command, std::string& response)
 	case R_TEST2:
 	case R_SAVEIMG1:
 	case R_SAVEIMG2:
+	case R_BW:
 		response=m_mapCommandsResponses[m_mapQueriesCommands[command]];
 		if(response.compare("Still thinking")!=0)
 			m_mapCommandsResponses.erase(m_mapQueriesCommands[command]);
 
 		break;
+
+
 	}
 
 	if(response.empty())

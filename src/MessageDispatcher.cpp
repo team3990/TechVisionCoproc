@@ -28,12 +28,15 @@ void Listen(void *arg){
 				memset(str,'\0',128);
 				memcpy(str,(char*)request.data(),request.size());
 			std::string command(str);
+			//printf("received %s\n",str);
 
 				{
 					std::string response;
 					dispatcher->TransferToCommandProcessor(command,response);
 					//dispatcher->SendBackResponse(command+"=>"+response);   // Specifying initial command not useful here
+
 					dispatcher->SendBackResponse(response);
+					//printf("sent back %s\n",response.c_str());
 			  	}
         }
     	usleep(1000);  // not necessary?

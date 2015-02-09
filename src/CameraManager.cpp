@@ -10,8 +10,13 @@
 #include "config.h"
 
 CameraManager::CameraManager() {
+#ifdef USE_OPENCV_FOR_CAPTURE
 	m_oVideoCap1.open(0);
 	m_oVideoCap2.open(1);
+#else
+	bool open1=m_oVideoCap1.open("/dev/video0");
+	bool open2=m_oVideoCap2.open("/dev/video1");
+#endif
 
 m_pCap1Thread=NULL;
 m_pCap2Thread=NULL;
@@ -20,7 +25,11 @@ m_bKeepCapturing= true;
 }
 
 CameraManager::~CameraManager() {
-	// TODO Auto-generated destructor stub
+
+	StopCapturing();
+	while(m_bCapture1ThreadEnded==false);
+	while(m_bCapture2ThreadEnded==false);
+
 	if(m_pCap1Thread)
 		delete m_pCap1Thread;
 	if(m_pCap2Thread)
@@ -30,6 +39,8 @@ CameraManager::~CameraManager() {
 void CaptureFramesCam1(void* p)
 {
 	CameraManager *cammgr=(CameraManager*)p;
+	cammgr->SetCapture1ThreadEnded(false);
+
 	if(cammgr->m_oVideoCap1.isOpened())
 		while(1){
 			{
@@ -42,12 +53,13 @@ void CaptureFramesCam1(void* p)
 
 			usleep(1000);
 		}
-
+	cammgr->SetCapture1ThreadEnded(true);
 }
 
 void CaptureFramesCam2(void* p)
 {
 	CameraManager *cammgr=(CameraManager*)p;
+	cammgr->SetCapture2ThreadEnded(false);
 	if(cammgr->m_oVideoCap2.isOpened())
 		while(1){
 			{
@@ -59,7 +71,7 @@ void CaptureFramesCam2(void* p)
 
 			usleep(1000);
 		}
-
+	cammgr->SetCapture2ThreadEnded(true);
 }
 
 void CameraManager::StartCapturing()
