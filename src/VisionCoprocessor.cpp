@@ -45,7 +45,7 @@ bool done=false;
 		// Empty for now
 		usleep(10000);
 		if(getch()==27) done=true;
-
+		if(cmdprocessor.IsStopCommandReceived()) done=true;
 	}
 	cmdprocessor.StopCapture();
 sleep(2);

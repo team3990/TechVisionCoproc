@@ -21,7 +21,7 @@ using namespace tthread;
 class CommandProcessor {
 public:
 
-	enum {UNKNOWN_CMD=0,RESET,STATUS,SAVEIMG1,SAVEIMG2,DETECT_YOTE,DETECT_PLATFORM,TEST,TEST2,
+	enum {UNKNOWN_CMD=0,STOP,RESET,STATUS,SAVEIMG1,SAVEIMG2,DETECT_YOTE,DETECT_PLATFORM,TEST,TEST2,
 		  R_DETECT_YOTE,R_DETECT_PLATFORM,R_TEST,R_TEST2,R_SAVEIMG1,R_SAVEIMG2, BW, R_BW};
 
 	CommandProcessor();
@@ -40,7 +40,7 @@ public:
 	void StopCapture(){
 		m_pCameraManager->StopCapturing();
 	}
-
+	bool IsStopCommandReceived(){ return m_bStop; }
 private:
 	int GetCommandCodeFromString(std::string strcommand);
 	thread *m_pCmdProcessingThread;
@@ -50,6 +50,7 @@ private:
 	std::map<std::string,std::string> m_mapCommandsResponses;
 	std::map<std::string,std::string> m_mapQueriesCommands;
 	mutex m_oResponseMutex;
+	bool m_bStop;
 };
 
 #endif /* COMMANDPROCESSOR_H_ */

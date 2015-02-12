@@ -23,11 +23,10 @@ public:
 	
 private:
 
-	LoggingService(std::string);
+	LoggingService();
 	virtual ~LoggingService();
 	LoggingService(LoggingService const&){}
 	LoggingService& operator=(LoggingService const&){}
-	void LogTrace(char *format,...);
 	static LoggingService* m_pInstance;
 	FILE *m_pFileDescr;
 };

@@ -41,11 +41,15 @@ void CaptureFramesCam1(void* p)
 	CameraManager *cammgr=(CameraManager*)p;
 	cammgr->SetCapture1ThreadEnded(false);
 
-	if(cammgr->m_oVideoCap1.isOpened())
+//	if(cammgr->m_oVideoCap1.isOpened())
 		while(1){
 			{
 				lock_guard<mutex>(cammgr->m_oCam1Mutex);
-				cammgr->m_oVideoCap1 >> cammgr->m_oCurrentFrame1;
+#ifdef USE_OPENCV_FOR_CAPTURE				
+cammgr->m_oVideoCap1 >> cammgr->m_oCurrentFrame1;
+#else
+#endif
+
 			}
 
 			if(cammgr->KeepCapturing()==false)
@@ -60,12 +64,15 @@ void CaptureFramesCam2(void* p)
 {
 	CameraManager *cammgr=(CameraManager*)p;
 	cammgr->SetCapture2ThreadEnded(false);
-	if(cammgr->m_oVideoCap2.isOpened())
+//	if(cammgr->m_oVideoCap2.isOpened())
 		while(1){
 			{
 				lock_guard<mutex>(cammgr->m_oCam2Mutex);
+#ifdef USE_OPENCV_FOR_CAPTURE
 				cammgr->m_oVideoCap2 >> cammgr->m_oCurrentFrame2;
-			}
+#else
+#endif			
+}
 			if(cammgr->KeepCapturing()==false)
 				break;
 

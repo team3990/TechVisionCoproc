@@ -1,9 +1,17 @@
+#include <stdarg.h>
 #include "LoggingService.h"
 
 LoggingService *LoggingService::m_pInstance = NULL;  
 
 LoggingService::LoggingService()
 {
+}
+
+LoggingService *LoggingService::Instance(){
+if (!m_pInstance)   // Only allow one instance of class to be generated.
+      m_pInstance = new LoggingService;
+
+   return m_pInstance;
 }
 
 bool LoggingService::OpenLogFile(std::string logfname)

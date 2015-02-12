@@ -16,8 +16,9 @@ CommandProcessor::CommandProcessor() {
 	m_pCmdProcessingThread=NULL;
 	m_pCommandToProcess= NULL;
 	m_pCameraManager=new CameraManager;
-	
+	m_bStop= false;	
 	// Register available commands
+	m_mapCommandsAvailable["stop"]= STOP;
 	m_mapCommandsAvailable["reset"]=  RESET;
 	m_mapCommandsAvailable["status"]=     STATUS;
 	m_mapCommandsAvailable["saveimg1"]= SAVEIMG1;
@@ -91,7 +92,12 @@ void CommandProcessor::ProcessCmd(std::string command, std::string& response)
 	case UNKNOWN_CMD:
 		response="Unknown command";
 		break;
-
+	case STOP:
+		if(m_pCmdProcessingThread)
+			delete m_pCmdProcessingThread;
+		m_pCmdProcessingThread= NULL;
+		m_bStop=true;	
+	break;
 	case RESET:
 		if(m_pCmdProcessingThread)
 			delete m_pCmdProcessingThread;
