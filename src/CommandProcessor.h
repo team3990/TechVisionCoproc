@@ -12,6 +12,7 @@
 #include <map>
 #include "tinythread.h"
 #include "CameraManager.h"
+
 class VisionCommand;
 
 using namespace tthread;

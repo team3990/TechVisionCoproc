@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include "MessageDispatcher.h"
 #include "CommandProcessor.h"
+#include "LoggingService.h"
 #include <iostream>
 #include <iomanip>
 
@@ -34,6 +35,11 @@ int main() {
 	CommandProcessor cmdprocessor;
 	MessageDispatcher dispatcher(&cmdprocessor);
 	dispatcher.StartListening();
+	if(LoggingService::Instance()->OpenLogFile(LOGFILENAME)==false)
+		printf("oops, unable to open log file %s\n",LOGFILENAME);
+		
+	LOG_TRACE("Opening the log file\n");
+	
 bool done=false;
 	while(!done){
 		// Empty for now
@@ -43,5 +49,6 @@ bool done=false;
 	}
 	cmdprocessor.StopCapture();
 sleep(2);
+LoggingService::Instance()->CloseLogFile();
 	return 0;
 }

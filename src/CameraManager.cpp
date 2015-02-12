@@ -76,7 +76,7 @@ void CaptureFramesCam2(void* p)
 
 void CameraManager::StartCapturing()
 {
-	printf("Starting capture\n");
+	LOG_TRACE("Starting capture\n");
 	m_pCap1Thread= new thread(CaptureFramesCam1, (void *) this);
 	m_pCap2Thread= new thread(CaptureFramesCam2, (void *) this);
 

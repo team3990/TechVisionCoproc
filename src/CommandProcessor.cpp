@@ -10,12 +10,13 @@
 #include "DummyCommand.h"
 #include "ImgSaveCommand.h"
 #include "config.h"
+#include "LoggingService.h"
 
 CommandProcessor::CommandProcessor() {
 	m_pCmdProcessingThread=NULL;
 	m_pCommandToProcess= NULL;
 	m_pCameraManager=new CameraManager;
-
+	
 	// Register available commands
 	m_mapCommandsAvailable["reset"]=  RESET;
 	m_mapCommandsAvailable["status"]=     STATUS;
@@ -146,7 +147,7 @@ void CommandProcessor::ProcessCmd(std::string command, std::string& response)
 
 
 		if(pCommandObj){
-			pCommandObj->SetContext(command,this,m_pCameraManager,NULL);
+			pCommandObj->SetContext(command,this,m_pCameraManager);
 			m_mapCommandsResponses[command]="Still thinking";
 			m_pCmdProcessingThread = new thread(LaunchExecution, (void *) pCommandObj);
 		}

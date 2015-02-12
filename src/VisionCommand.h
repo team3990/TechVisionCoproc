@@ -11,17 +11,17 @@
 #include <stdio.h>
 #include "CommandProcessor.h"
 #include "CameraManager.h"
+#include "LoggingService.h"
 
 class VisionCommand {
 public:
 	VisionCommand();
 	virtual ~VisionCommand();
 	virtual void Execute()=0;
-	void SetContext(std::string command,CommandProcessor *pCP, CameraManager *pCM, FILE *pF){
+	void SetContext(std::string command,CommandProcessor *pCP, CameraManager *pCM){
 		m_sCommand= command;
 		m_pCmdProcessor= pCP;
 		m_pCameraManager= pCM;
-		m_pLogFile= pF;
 	}
 
 
@@ -30,12 +30,10 @@ protected:
 	void SetResult(std::string s){
 		m_sResult=s;
 	}
-	// Called by derived objects for logging traces
-	void LogTrace(char *format,...);
 
 	CommandProcessor *m_pCmdProcessor; // borrowed, do not delete
 	CameraManager *m_pCameraManager;  // borrowed, do not delete
-	FILE *m_pLogFile;
+	
 
 private:
 	void SendBackResponse(){
@@ -46,6 +44,7 @@ private:
 
 	std::string m_sResult;
 	std::string m_sCommand;
+	
 };
 
 #endif /* VISIONCOMMAND_H_ */

@@ -16,6 +16,7 @@
 #ifndef USE_OPENCV_FOR_CAPTURE
 #include "OCVCapture.h"
 #endif
+#include "LoggingService.h"
 
 using namespace tthread;
 
@@ -55,7 +56,7 @@ public:
 	mutex m_oCam2Mutex;
 	void SetCapture1ThreadEnded(bool b){m_bCapture1ThreadEnded=b;}
 	void SetCapture2ThreadEnded(bool b){m_bCapture2ThreadEnded=b;}
-
+	
 private:
 	thread *m_pCap1Thread, *m_pCap2Thread;
 #ifdef USE_OPENCV_FOR_CAPTURE
@@ -68,7 +69,6 @@ private:
 	bool m_bKeepCapturing;
 	bool m_bCapture1ThreadEnded;
 	bool m_bCapture2ThreadEnded;
-
 
 };
 
