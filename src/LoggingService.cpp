@@ -16,7 +16,7 @@ if (!m_pInstance)   // Only allow one instance of class to be generated.
 
 bool LoggingService::OpenLogFile(std::string logfname)
 {
-	m_pFileDescr=fopen(logfname.c_str(),"w");
+	m_pFileDescr=fopen(logfname.c_str(),"a");
 	return m_pFileDescr!=NULL;
 }
 
