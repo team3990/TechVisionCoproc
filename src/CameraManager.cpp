@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include "CameraManager.h"
+#include "LoggingService.h"
 #include "config.h"
 
 CameraManager::CameraManager() {
@@ -41,13 +42,20 @@ void CaptureFramesCam1(void* p)
 	CameraManager *cammgr=(CameraManager*)p;
 	cammgr->SetCapture1ThreadEnded(false);
 
-//	if(cammgr->m_oVideoCap1.isOpened())
+#ifdef USE_OPENCV_FOR_CAPTURE				
+	if(cammgr->m_oVideoCap1.isOpened())
+#else
+	  if(cammgr->m_oVideoCap1.isOpen())
+#endif
 		while(1){
 			{
 				lock_guard<mutex>(cammgr->m_oCam1Mutex);
 #ifdef USE_OPENCV_FOR_CAPTURE				
 cammgr->m_oVideoCap1 >> cammgr->m_oCurrentFrame1;
 #else
+ if(cammgr->m_oVideoCap1.rgb(cammgr->m_oCurrentFrame1)!=true)
+   LOG_TRACE("Error grabbing frame from cam1\n");
+
 #endif
 
 			}
@@ -64,13 +72,22 @@ void CaptureFramesCam2(void* p)
 {
 	CameraManager *cammgr=(CameraManager*)p;
 	cammgr->SetCapture2ThreadEnded(false);
-//	if(cammgr->m_oVideoCap2.isOpened())
+
+#ifdef USE_OPENCV_FOR_CAPTURE				
+	if(cammgr->m_oVideoCap2.isOpened())
+#else
+	  if(cammgr->m_oVideoCap2.isOpen())
+#endif
+
 		while(1){
 			{
 				lock_guard<mutex>(cammgr->m_oCam2Mutex);
 #ifdef USE_OPENCV_FOR_CAPTURE
 				cammgr->m_oVideoCap2 >> cammgr->m_oCurrentFrame2;
 #else
+ if(cammgr->m_oVideoCap2.rgb(cammgr->m_oCurrentFrame2)!=true)
+   LOG_TRACE("Error grabbing frame from cam2\n");
+
 #endif			
 }
 			if(cammgr->KeepCapturing()==false)
