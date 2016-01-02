@@ -5,6 +5,7 @@ LoggingService *LoggingService::m_pInstance = NULL;
 
 LoggingService::LoggingService()
 {
+	m_pFileDescr = NULL;
 }
 
 LoggingService *LoggingService::Instance(){
@@ -37,5 +38,5 @@ if(m_pFileDescr){
     va_start(args,fmt);
     vfprintf(m_pFileDescr,fmt,args);
     va_end(args);
-}
+} else printf("Warning: logging file descriptor is null\n");
 }
