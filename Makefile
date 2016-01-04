@@ -3,7 +3,9 @@
 CFLAGS = -g -Isrc -Izmq/include
 
 # For Raspberry pi
-LDFLAGS = -Lzmq/lib/pi -lzmq -lv4l2 -lopencv_highgui -lopencv_core -lopencv_imgproc -lpthread -lrt 
+#LDFLAGS = -Lzmq/lib/pi -lzmq -lv4l2 -lopencv_highgui -lopencv_core -lopencv_imgproc -lpthread -lrt 
+#For odroid
+LDFLAGS = -Lzmq/lib/odroid -lzmq -lv4l2 -lopencv_highgui -lopencv_core -lopencv_imgproc -lpthread -lrt
 
 all: setup VisionCoproc  testcoproc
 
