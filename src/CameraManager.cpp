@@ -4,7 +4,7 @@
  *  Created on: Jan 19, 2015
  *      Author: odroid
  */
-
+#include "tinythread.h"
 #include "CameraManager.h"
 
 
@@ -81,7 +81,7 @@ cv::Mat CameraManager::GetFrame(int nCameraNo)
 	cv::Mat frame;
 
 	if(nCameraNo==0){
-		tthread::lock_guard<tthread:mutex> guard(m_oCam1Mutex);
+		tthread::lock_guard<tthread::mutex> guard(m_oCam1Mutex);
 		if(m_oCurrentFrame1.empty() == false)
 			frame= m_oCurrentFrame1.clone();
 	}

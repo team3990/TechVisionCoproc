@@ -12,7 +12,7 @@ In order to add new commands, look for the comment tag INSERT_HERE
 #include "CommandProcessor.h"
 #include "DummyCommand.h"
 #include "ImgSaveCommand.h"
-#include "config.h"
+#include "Defs.h"
 #include "LoggingService.h"
 #include "CameraManager.h"
 

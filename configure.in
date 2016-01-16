@@ -45,18 +45,6 @@ AC_CHECK_LIB([zmq], [main], [], [ echo "zmq library is missing..."
 # Checks for header files.
 AC_CHECK_HEADERS([fcntl.h  unistd.h])
 
-# Checks for typedefs, structures, and compiler characteristics.
-AC_HEADER_STDBOOL
-AC_C_INLINE
-AC_TYPE_INT64_T
-AC_TYPE_SIZE_T
-AC_TYPE_UINT32_T
-AC_TYPE_UINT8_T
-
-AC_SUBST(nv_opencv)
-AM_CONDITIONAL([nv_opencv],[test $nv_opencv = 1])
-# Checks for library functions.
-AC_CHECK_FUNCS([bzero memset select])
 AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT
 echo " Building with OpenCV support....... : $nv_opencv"

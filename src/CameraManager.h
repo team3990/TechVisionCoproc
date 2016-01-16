@@ -11,7 +11,7 @@
 
 #include <string>
 #include "tinythread.h"
-#include "config.h"
+#include "Defs.h"
 
 #ifdef USE_OPENCV
 #include <opencv2/opencv.hpp>

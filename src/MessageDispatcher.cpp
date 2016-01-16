@@ -8,7 +8,7 @@
 #include <string>
 #include <iostream>
 #include <unistd.h>
-#include "config.h"
+#include "Defs.h"
 
 #include "MessageDispatcher.h"
 
