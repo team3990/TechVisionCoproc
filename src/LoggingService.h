@@ -1,5 +1,5 @@
 /*
- * CommandProcessor.h
+ * LoggingService.h
  *
  *  Created on: Jan 17, 2015
  *      Author: odroid

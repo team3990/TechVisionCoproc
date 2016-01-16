@@ -7,10 +7,9 @@
 
 #include "VisionCommand.h"
 
-VisionCommand::VisionCommand() {
-	m_pCmdProcessor= NULL;
-	m_pCameraManager= NULL;
+VisionCommand::VisionCommand() : m_pCmdProcessor(NULL), m_pCameraManager(NULL) {
 	m_sResult.clear();
+	m_sCommand.clear();
 }
 
 VisionCommand::~VisionCommand() {

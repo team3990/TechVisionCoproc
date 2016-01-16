@@ -4,39 +4,37 @@
  *  Created on: Jan 17, 2015
  *      Author: odroid
 
-In order to add new commands, look for the comment tag //**
+In order to add new commands, look for the comment tag INSERT_HERE
+
  */
+
 #include <stdio.h>
-#include <opencv2/opencv.hpp>
 #include "CommandProcessor.h"
 #include "DummyCommand.h"
 #include "ImgSaveCommand.h"
 #include "config.h"
 #include "LoggingService.h"
+#include "CameraManager.h"
 
 CommandProcessor::CommandProcessor() {
-	m_pCmdProcessingThread=NULL;
+	m_pCmdProcessingThread= NULL;
 	m_pCommandToProcess= NULL;
-	m_pCameraManager=new CameraManager;
-	m_bStop= false;	
+	m_pCameraManager= new CameraManager;
+	m_bStop= false;
+
 	// Register available commands
 	m_mapCommands_Immediate["stop"]= STOP;
-	m_mapCommands_Immediate["reset"]=  RESET;
-	m_mapCommands_Immediate["status"]=     STATUS;
-	m_mapCommands_Delayed["saveimg1"]= SAVEIMG1;
-	m_mapCommands_Delayed["r_saveimg1"]= R_SAVEIMG1;
-	m_mapCommands_Delayed["saveimg2"]= SAVEIMG2;
-	m_mapCommands_Delayed["r_saveimg2"]= R_SAVEIMG2;
+	m_mapCommands_Immediate["reset"]= RESET;
+	m_mapCommands_Immediate["status"]= STATUS;
+
+	m_mapCommands_Delayed["saveimg"]= SAVEIMG;
+	m_mapCommands_Delayed["r_saveimg"]= R_SAVEIMG;
 	m_mapCommands_Delayed["test"]= TEST;
 	m_mapCommands_Delayed["r_test"]= R_TEST;
-	m_mapCommands_Delayed["longtest"]= LONGTEST;
-	m_mapCommands_Delayed["r_longtest"]= R_LONGTEST;
-	m_mapCommands_Delayed["bw"]= BW;
-	m_mapCommands_Delayed["r_bw"]= R_BW;
 
-	//**  Insert new pair of commands here 
-
-	//**  End of insertion
+	// INSERT_HERE: new pair of commands
+	// e.g. m_mapCommands_Delayed["mybrandnewcommand"]= MY_BRAND_NEW_COMMAND;
+	//      m_mapCommands_Delayed["r_mybrandnewcommand"]= R_MY_BRAND_NEW_COMMAND;
 
 	m_pCameraManager->StartCapturing();
 }
@@ -45,147 +43,154 @@ CommandProcessor::~CommandProcessor() {
 	delete m_pCameraManager;
 }
 
+
 std::string CommandProcessor::GetStatus() {
+
 	std::string status="Command processor status:\nVersion "+ std::string(VERSION) + "\nImage dump location: "+ std::string(IMAGE_DUMP_LOCATION) +"\n";
 
-	std::map<std::string,std::string>::iterator iter;
-	char str[1024];
-	bool bFoundSomething=false;
-	for(iter=m_mapCommandsResponses.begin(); iter!=m_mapCommandsResponses.end(); iter++){
-		std::string s=iter->first;
+	std::map<std::string, std::string>::iterator iter;   //One day, auto will be used
+	bool bFoundJob= false;
 
-		sprintf(str,"  %s: %s\n",(iter->first).c_str(),(iter->second).c_str());
-		status=status+std::string(str);
-		bFoundSomething=true;
+	for(iter=m_mapCommandsResponses.begin(); iter!=m_mapCommandsResponses.end(); iter++){
+		status += "  " + iter->first + ": " + iter->second + "\n";
+		bFoundJob= true;
 	}
-	if(bFoundSomething==false)
-		status=status+" No job running\n";
+
+	if(bFoundJob == false)
+		status += " No job running\n";
+
 	return status;
 }
 
+// Returns the enum associated to the command (string format)
 int CommandProcessor::GetCommandCodeFromString(std::string strcommand)
 {
 	if(m_mapCommands_Immediate.count(strcommand)==1)
 		return m_mapCommands_Immediate[strcommand];
+
 	if(m_mapCommands_Delayed.count(strcommand)==1)
 		return m_mapCommands_Delayed[strcommand];
 
 	return UNKNOWN_CMD;
 }
 
+void CommandProcessor::StopCapture()
+{
+		m_pCameraManager->StopCapturing();
+}
 
 void LaunchExecution(void *arg){
+
 	VisionCommand *pCmd=(VisionCommand*)arg;
 	pCmd->Execute();
 
 	delete pCmd; // Upon deletion, result is sent back to CommandProcessor
 }
 
+// Handles the command: big switch
 void CommandProcessor::ProcessCmd(std::string command, std::string& response)
 {
 	int nCommandCode= GetCommandCodeFromString(command);
-
-	VisionCommand *pCommandObj=NULL;
+	VisionCommand *pCommandObj= NULL;
 
 	response.clear();
 
 	// Process "immediate" commands
 
 	switch(nCommandCode){
+
 	case UNKNOWN_CMD:
 		response="Unknown command";
 		break;
+
 	case STOP:
 		if(m_pCmdProcessingThread)
 			delete m_pCmdProcessingThread;
 		m_pCmdProcessingThread= NULL;
-		m_bStop=true;	
-		response="Stopping";
+		m_bStop= true;
+		response= "Stopping";
+		// TODO: initiate shutdown?
 	break;
+
 	case RESET:
 		if(m_pCmdProcessingThread)
 			delete m_pCmdProcessingThread;
+
 		m_pCmdProcessingThread= NULL;
 		m_mapCommandsResponses.clear();
-		response="Done";
+		response= "Done";
 		break;
+
 	case STATUS:
-
-		response=GetStatus()+m_pCameraManager->GetStatus();
+		response= GetStatus() + m_pCameraManager->GetStatus();
 		break;
-	}
+	} // end processing immediate comands
 
-	if(response.empty()==false)
+	if(response.empty()==false) // We got a response, no need to keep going
 		return;
 
-	// Process "delayed" commands
+
+	// Process "delayed", request-type commands
 
 	switch(nCommandCode){
 
-	case SAVEIMG1:
-		pCommandObj= new ImgSaveCommand(std::string(IMAGE_DUMP_LOCATION),0);
-		response="Working on it";
+	case SAVEIMG:
+		pCommandObj= new ImgSaveCommand(std::string(IMAGE_DUMP_LOCATION), 0); // 0 is for camera number in case we have more than 1
+		response= "Working on it";
 		break;
-	case SAVEIMG2:
-		pCommandObj= new ImgSaveCommand(std::string(IMAGE_DUMP_LOCATION),1);
-		response="Working on it";
-		break;
+
 	case TEST:
-		pCommandObj=new DummyCommand(1);
-		response="Started";
-		break;
-	case LONGTEST:
-		pCommandObj=new DummyCommand(2);
+		pCommandObj= new DummyCommand();
 		response="Started";
 		break;
 
-	case BW:
-		pCommandObj=new BWCommand();
-		response="Started";
-		break;
-	//** Insert new case here; 
-	//** Instantiate commmand
-	//** variable <response> should be set to something
+	// INSERT_HERE new request-type commands
+	// Instantiate commmand
+	// Variable <response> should be set to something
 
 	}
 
-	if(response.empty()==false){
+	if(response.empty()==false){  // We got a response, no need to keep going
+
 		// check if command not already launched
-		if(m_mapCommandsResponses.find(command)!=m_mapCommandsResponses.end()){
+		if(m_mapCommandsResponses.find(command)!= m_mapCommandsResponses.end()){
+
 			if(pCommandObj)
-				delete pCommandObj;
+				delete pCommandObj; // Command instantiation was useless after all
 			response="Busy";
 			return;
 		}
 
 
 		if(pCommandObj){
-			pCommandObj->SetContext(command,this,m_pCameraManager);
-			m_mapCommandsResponses[command]="Still thinking";
-			m_pCmdProcessingThread = new thread(LaunchExecution, (void *) pCommandObj);
+
+			pCommandObj->SetContext(command, this, m_pCameraManager);
+			m_mapCommandsResponses[command]= "Still thinking";
+			m_pCmdProcessingThread = new tthread::thread(LaunchExecution, (void *) pCommandObj);
 		}
 		return;
 	}
 
+	// Process "delayed", response-type commands
 
 	switch(nCommandCode){
+
 	case R_TEST:
-	case R_LONGTEST:
-	case R_SAVEIMG1:
-	case R_SAVEIMG2:
-	case R_BW:
-	  std::string initialrequest=command;
-	  initialrequest.erase(0,2);  // remove _r
-	  response=m_mapCommandsResponses[initialrequest];
-		if(response.compare("Still thinking")!=0)
-			m_mapCommandsResponses.erase(initialrequest);
+	case R_SAVEIMG:
+  	  // INSERT_HERE "case XXX:" lines for new response-type commands
+	  // e.g. case R_MY_BRAND_NEW_COMMAND:
 
-		break;
+	  // Deduce initial request, e.g. if command at this point is r_mytest, initial request was mytest
+	  std::string initialrequest= command;
+	  initialrequest.erase(0,2);  // remove r_
 
+	  response= m_mapCommandsResponses[initialrequest];
+	  if(response.compare("Still thinking") != 0)
+			m_mapCommandsResponses.erase(initialrequest);  // Job is done, make the initial command available again
 
+	  break;
 	}
 
 	if(response.empty())
 		response="Error";
-
 }

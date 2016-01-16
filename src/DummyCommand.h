@@ -10,24 +10,15 @@
 
 #include "VisionCommand.h"
 
-class DummyCommand: public VisionCommand {
+class DummyCommand: public VisionCommand
+{
 public:
-	DummyCommand(int mode);
+	DummyCommand();
 	virtual ~DummyCommand();
 	virtual void Execute();
+
 private:
-	int m_nMode;  //1=short exec (50ms), 2=long exec (2s)
+	int m_nSomeInternalData;
 };
-
-
-class BWCommand: public VisionCommand {
-public:
-	BWCommand(){}
-	virtual ~BWCommand(){}
-	virtual void Execute();
-
-
-};
-
 
 #endif /* DUMMYCOMMAND_H_ */

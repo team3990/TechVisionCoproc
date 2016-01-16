@@ -17,13 +17,13 @@ class VisionCommand {
 public:
 	VisionCommand();
 	virtual ~VisionCommand();
+
 	virtual void Execute()=0;
-	void SetContext(std::string command,CommandProcessor *pCP, CameraManager *pCM){
+	void SetContext(std::string command, CommandProcessor *pCP, CameraManager *pCM){
 		m_sCommand= command;
 		m_pCmdProcessor= pCP;
 		m_pCameraManager= pCM;
 	}
-
 
 protected:
 	// Called by derived objects at the end of Execute()
@@ -36,8 +36,9 @@ protected:
 	
 
 private:
+
 	void SendBackResponse(){
-		if(m_pCmdProcessor && m_sResult.size()>0){
+		if(m_pCmdProcessor && m_sResult.size() > 0){
 			m_pCmdProcessor->StoreResponse(m_sCommand,m_sResult);
 		}
 	}

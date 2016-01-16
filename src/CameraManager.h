@@ -8,67 +8,69 @@
 #ifndef CAMERAMANAGER_H_
 #define CAMERAMANAGER_H_
 
-#include <opencv2/opencv.hpp>
+
 #include <string>
-#include <opencv2/opencv.hpp>
 #include "tinythread.h"
 #include "config.h"
+
+#ifdef USE_OPENCV
+#include <opencv2/opencv.hpp>
+#endif
+
 #ifndef USE_OPENCV_FOR_CAPTURE
 #include "OCVCapture.h"
 #endif
+
 #include "LoggingService.h"
 
-using namespace tthread;
 
 class CameraManager {
 public:
-	friend void CaptureFramesCam1(void* p);
-	friend void CaptureFramesCam2(void* p);
 
 
 	CameraManager();
 	virtual ~CameraManager();
 
+	friend void CaptureFramesCam1(void* p);
+
+#ifdef USE_OPENCV
 	cv::Mat GetFrame(int nCameraNo);
-	void StartCapturing();
-	bool KeepCapturing(){ return m_bKeepCapturing;}
-    void StopCapturing(){ m_bKeepCapturing=false;}
-	std::string GetStatus(){
-		std::string response="Camera manager: ";
-		bool bConnected=false;
-#ifdef USE_OPENCV_FOR_CAPTURE
-		if(m_oVideoCap1.isOpened()){
-			response=response+"\n * camera 1 connected\n";
-			bConnected=true;
-		}
-		if(m_oVideoCap2.isOpened()){
-			response=response+"\n * camera 2 connected\n";
-			bConnected=true;
-		}
-#else
-		response=response+"todo\n";
 #endif
-		if(bConnected==false)
-			response=response+"No camera connected\n";
-		return response;
-	}
-	mutex m_oCam1Mutex;
-	mutex m_oCam2Mutex;
-	void SetCapture1ThreadEnded(bool b){m_bCapture1ThreadEnded=b;}
-	void SetCapture2ThreadEnded(bool b){m_bCapture2ThreadEnded=b;}
+
+	void StartCapturing();
+	bool KeepCapturing(){ return m_bKeepCapturing; }
+    void StopCapturing(){ m_bKeepCapturing= false; }
+
+	std::string GetStatus();
+	tthread::mutex m_oCam1Mutex;
+
+	void SetCapture1ThreadEnded(bool b){ m_bCapture1ThreadEnded= b; }
+
+	/* In case second cam is needed
+		friend void CaptureFramesCam2(void* p);
+		void SetCapture2ThreadEnded(bool b){m_bCapture2ThreadEnded=b;}
+		tthread::mutex m_oCam2Mutex;
+	*/
 	
 private:
-	thread *m_pCap1Thread, *m_pCap2Thread;
+	tthread::thread *m_pCap1Thread;
+	//tthread::thread *m_pCap2Thread;  // in case we need a second cam
+
+#ifdef USE_OPENCV
+
 #ifdef USE_OPENCV_FOR_CAPTURE
 	cv::VideoCapture m_oVideoCap1, m_oVideoCap2;
 #else
 	OCVCapture m_oVideoCap1, m_oVideoCap2;
 #endif
+
 	cv::Mat m_oCurrentFrame1;
 	cv::Mat m_oCurrentFrame2;
+#endif
+
 	bool m_bKeepCapturing;
 	bool m_bCapture1ThreadEnded;
-	bool m_bCapture2ThreadEnded;
+	//bool m_bCapture2ThreadEnded; // in case we need a second cam
 
 };
 

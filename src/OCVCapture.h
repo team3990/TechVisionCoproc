@@ -32,11 +32,12 @@
 #ifndef OCVCAPTURE_H
 #define OCVCAPTURE_H
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
+#ifdef USE_OPENCV
 
 #include <vector>
 #include <string>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 class OCVCapture
 {
@@ -121,6 +122,8 @@ private:
 	uint8_t*		m_yuv_image_data;
 	uint32_t		m_yuv_bytes_per_line;
 };
+
+#endif
 
 #endif // OCVCAPTURE_H
 

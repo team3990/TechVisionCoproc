@@ -15,6 +15,8 @@
 
 #include "OCVCapture.h"
 
+#ifdef USE_OPENCV
+
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
@@ -690,3 +692,5 @@ void OCVCapture::close()
 		
 	m_camera_handle = -1;
 }
+
+#endif

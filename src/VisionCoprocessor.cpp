@@ -6,16 +6,17 @@
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 #include <unistd.h>
-#include "MessageDispatcher.h"
-#include "CommandProcessor.h"
-#include "LoggingService.h"
 #include <iostream>
 #include <iomanip>
-
-using namespace std;
 #include <termios.h>
 #include <unistd.h>
 #include <stdio.h>
+#include "MessageDispatcher.h"
+#include "CommandProcessor.h"
+#include "LoggingService.h"
+#include "config.h"
+
+using namespace std;
 /* reads from keypress, doesn't echo */
 int getch(void)
 {
@@ -35,9 +36,12 @@ int main() {
 	CommandProcessor cmdprocessor;
 	MessageDispatcher dispatcher(&cmdprocessor);
 	dispatcher.StartListening();
+
+#ifdef LOGFILENAME
 	if(LoggingService::Instance()->OpenLogFile(LOGFILENAME)==false)
 		printf("oops, unable to open log file %s\n",LOGFILENAME);
-		
+#endif
+
 	LOG_TRACE("Opening the log file\n");
 	
 bool done=false;

@@ -6,44 +6,26 @@
  */
 
 #include "DummyCommand.h"
-#include <opencv2/opencv.hpp>
 
-DummyCommand::DummyCommand(int mode) : m_nMode(mode)
+
+DummyCommand::DummyCommand()
 {
-	// TODO Auto-generated constructor stub
+	m_nSomeInternalData= 0;
 }
 
 DummyCommand::~DummyCommand() {
-	// TODO Auto-generated destructor stub
 }
 
 void DummyCommand::Execute(){
 
 	// Fake computations...
-	if(m_nMode==1)
-		usleep(50000);  //50 ms
-	else sleep(2);   //2s
-	char str[128];
-	sprintf(str,"Test mode %d: result=%s",m_nMode,(m_nMode==1?"pi":"nan"));
+
+	int n= 0;
+	n++;
+
+	// Prepare output
+	char str[256];
+	sprintf(str,"Output of dummy_command: result = 42");
 	SetResult(str);
 }
 
-void BWCommand::Execute(){
-	std::string str;
-
-cv::Mat image=m_pCameraManager->GetFrame(0);
-
-cv::Mat bwimage(image.rows, image.cols, 1);
-cvtColor(image, bwimage, CV_BGR2GRAY);
-cv::threshold(bwimage, bwimage, 128, 255, cv::THRESH_BINARY);
-int n=cv::countNonZero(bwimage);
-printf("n=%d\n",n);
-if(n > bwimage.cols * bwimage.rows / 2)
-		str = "white!";
-
-else
-	str = "black!";
-
-
-	SetResult(str);
-}
