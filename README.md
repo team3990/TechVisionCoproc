@@ -14,14 +14,15 @@ Installation
 ============
 
 Move to the working directory. Copy the appropriate libzmq.a library located in zmq/lib/* to zmq/lib, e.g.:
-> cp zmq/lib/odroid/libzmq.a zmq/lib
+
+  $ cp zmq/lib/odroid/libzmq.a zmq/lib
 
 Then, the following series of commands will build the server and a test tool.
 
-> mkdir build
-> cd build
-> cmake ..
-> make
+  $ mkdir build
+  $ cd build
+  $ cmake ..
+  $ make
 
 If everything went well, two binaries should be created: 
 - the coprocessor server: VisionCoproc
@@ -32,32 +33,32 @@ Execution
 
 Launching VisionCoproc from the shell, we should get (modulo opencv camera warnings):
 
-> ./VisionCoproc
-T4K Vision Coprocessor v2016
-----------------------
+$ ./VisionCoproc
+  T4K Vision Coprocessor v2016
+  ----------------------
 
-* Using OpenCV v2.4.8
-* Using ZMQ v4.2
+  * Using OpenCV v2.4.8
+  * Using ZMQ v4.2
 
-Connecting with camera: Ok
-Hit Ctrl-C to quit
-Listening
+  Connecting with camera: Ok
+  Hit Ctrl-C to quit
+  Listening
 
 
 If you open up another shell and cd to the build directory, you can use the test tool to verify that communication is ok:
 
-> ./testcoproc status
-T4K Vision Coprocessor Test Tool
---------------------------------
+  $ ./testcoproc status
+  T4K Vision Coprocessor Test Tool
+  --------------------------------
 
-* using ZMQ v4.2
+  * using ZMQ v4.2
 
-Command processor status:
-Version 2016
-Image dump location: /media/data/images
- No job running
-Camera manager: 
- * camera 1 connected
+  Command processor status:
+  Version 2016
+  Image dump location: /media/data/images
+   No job running
+  Camera manager: 
+   * camera 1 connected
 
 
 Communication
@@ -65,12 +66,12 @@ Communication
 
 Commands handled by the coprocessor so far:
 
-reset				: stops processing, destroys results
-status				: returns internal status 
-saveimg				: captures an image from camera and dumps it to disk   
-test				: executes a fake command 
-r_test				: sends back "Test mode 1: result=pi"
-r_saveimg            		: sends back filename of saved image from cam or "Trying to save empty image!" if no camera is connected.
+- reset				: stops processing, destroys results
+- status				: returns internal status 
+- saveimg				: captures an image from camera and dumps it to disk   
+- test				: executes a fake command 
+- r_test				: sends back "Test mode 1: result=pi"
+- r_saveimg            		: sends back filename of saved image from cam or "Trying to save empty image!" if no camera is connected.
 
 
 * Sending a command always initiates a response. Typical use:  roboRio sends "test", waits a bit and sends "r_test" to get the result.
