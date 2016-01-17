@@ -1,8 +1,6 @@
 #ifndef DEFS_H
 #define DEFS_H
 
-#include "config.h"
-#define USE_OPENCV   HAVE_OPENCV_CV_H
 
 #define IMAGE_DUMP_LOCATION   "/media/data/images"
 
@@ -14,7 +12,7 @@
 // Comment out to suppress logging
 #define LOGFILENAME "log.txt"
 
-//#define USE_OPENCV_FOR_CAPTURE
+#define USE_OPENCV_FOR_CAPTURE
 
 
 #endif

@@ -17,7 +17,7 @@ class LoggingService{
 
 public:
 	static LoggingService* Instance();
-	void LogTrace(char *format,...);
+	void LogTrace(const char *format,...);
 	bool OpenLogFile(std::string logFile);
 	void CloseLogFile();
 	

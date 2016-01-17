@@ -33,7 +33,7 @@ LoggingService::~LoggingService()
 	CloseLogFile();  // Just in case
 }
 
-void LoggingService::LogTrace(char *fmt,...)
+void LoggingService::LogTrace(const char *fmt,...)
 {
 	if(m_pFileDescr){
 		va_list args;

@@ -6,19 +6,24 @@
 #include <string>
 #include <iostream>
 #include <stdio.h>
+#include "src/Defs.h"
+
 int main (int argc, char *argv[])
 {
 
     if(argc!=2){
-	printf("Usage:\n\ttestcoproc <command>\n");
+	std::cout << "Usage:"<<std::endl<<"\ttestcoproc <command>" << std::endl;
+	std::cout << "where <command> is one of:" << std::endl;
+	std::cout << "  reset, status, saveimg, r_saveimg, test, r_test" << std::endl;
 	exit(2);
 }
 
     //  Prepare our context and socket
     zmq::context_t context (1);
     zmq::socket_t socket (context, ZMQ_REQ);
-
-    socket.connect ("tcp://localhost:5555");
+    char server_name[256];
+    sprintf(server_name,"tcp://localhost:%d", COMM_PORT);
+    socket.connect (server_name);
 
     //  Do 10 requests, waiting each time for a response
         zmq::message_t request (strlen(argv[1]));
