@@ -10,9 +10,14 @@
 
 int main (int argc, char *argv[])
 {
+        std::cout << "T4K Vision Coprocessor Test Tool" << std::endl;
+	std::cout << "--------------------------------" << std::endl << std::endl; 
+        std::cout << "* using ZMQ v" << ZMQ_VERSION_MAJOR << "."; 
+        std::cout << ZMQ_VERSION_MINOR << std::endl << std::endl;
+
 
     if(argc!=2){
-	std::cout << "Usage:"<<std::endl<<"\ttestcoproc <command>" << std::endl;
+	std::cout << "Usage:"<<std::endl<<"  testcoproc <command>" << std::endl << std::endl;
 	std::cout << "where <command> is one of:" << std::endl;
 	std::cout << "  reset, status, saveimg, r_saveimg, test, r_test" << std::endl;
 	exit(2);

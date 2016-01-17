@@ -30,7 +30,7 @@ public:
 	  	  UNKNOWN_CMD= 0, STOP, RESET, STATUS,   // "Immediate" commands
 		  SAVEIMG, R_SAVEIMG,  // For saving images captured using a camera
 
-		  // INSERT HERE: enums for new pair of commands
+		  // INSERT_HERE: enums for new pair of commands
 		  // e.g. MY_BRAND_NEW_COMMAND, R_MY_BRAND_NEW_COMMAND,
 
 		  TEST, R_TEST  // Test command (simulates an operation

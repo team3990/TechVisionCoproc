@@ -10,19 +10,22 @@
 
 CameraManager::CameraManager() {
 
+  std::cout << "Connecting with camera: ";
 #ifdef USE_OPENCV
 
-#ifdef USE_OPENCV_FOR_CAPTURE
-	m_oVideoCap1.open(0);
-#else
-	bool open1=m_oVideoCap1.open("/dev/video0");
-#endif
+  bool bCamStateOk= m_oVideoCap1.open(CAMERA_NAME);
+  if(bCamStateOk)
+     std::cout << "Ok";
+  else 
+     std::cout << "Error";
+
+  std::cout << std::endl;
 
 #endif
 
-	m_pCap1Thread= NULL;
-	m_bCapture1ThreadEnded= false;
-	m_bKeepCapturing= true;
+  m_pCap1Thread= NULL;
+  m_bCapture1ThreadEnded= false;
+  m_bKeepCapturing= true;
 }
 
 CameraManager::~CameraManager() {
@@ -43,20 +46,11 @@ void CaptureFramesCam1(void* p)
 
 #ifdef USE_OPENCV
 
-#ifdef USE_OPENCV_FOR_CAPTURE				
 	if(cammgr->m_oVideoCap1.isOpened())
-#else
-	  if(cammgr->m_oVideoCap1.isOpen())
-#endif
 		while(true){
 			{
 				tthread::lock_guard<tthread::mutex>(cammgr->m_oCam1Mutex);
-#ifdef USE_OPENCV_FOR_CAPTURE				
 				cammgr->m_oVideoCap1 >> cammgr->m_oCurrentFrame1;
-#else
-				if(cammgr->m_oVideoCap1.rgb(cammgr->m_oCurrentFrame1) != true)
-					LOG_TRACE("Error grabbing frame from cam\n");
-#endif
 			}
 
 			if(cammgr->KeepCapturing() == false)
@@ -97,7 +91,6 @@ std::string CameraManager::GetStatus(){
 
 #ifdef USE_OPENCV
 
-#ifdef USE_OPENCV_FOR_CAPTURE
 		if(m_oVideoCap1.isOpened()){
 			response=response+"\n * camera 1 connected\n";
 			bConnected=true;
@@ -106,9 +99,6 @@ std::string CameraManager::GetStatus(){
 			response=response+"\n * camera 2 connected\n";
 			bConnected=true;
 		}
-#else
-		response=response+"todo\n";
-#endif
 		if(bConnected==false)
 			response=response+"No camera connected\n";
 		return response;

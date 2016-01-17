@@ -30,21 +30,34 @@ If everything went well, two binaries should be created:
 Execution
 =========
 
-Launching VisionCoproc from the shell, we should get:
+Launching VisionCoproc from the shell, we should get (modulo opencv camera warnings):
 
 > ./VisionCoproc
-  Hit Ctrl-C to quit
-  Listening
+T4K Vision Coprocessor v2016
+----------------------
+
+* Using OpenCV v2.4.8
+* Using ZMQ v4.2
+
+Connecting with camera: Ok
+Hit Ctrl-C to quit
+Listening
+
 
 If you open up another shell and cd to the build directory, you can use the test tool to verify that communication is ok:
 
 > ./testcoproc status
+T4K Vision Coprocessor Test Tool
+--------------------------------
 
-  Command processor status:
-  Version 2016
-  Image dump location: /media/data/images
-   No job running
-  Camera manager: No camera support (opencv not used)
+* using ZMQ v4.2
+
+Command processor status:
+Version 2016
+Image dump location: /media/data/images
+ No job running
+Camera manager: 
+ * camera 1 connected
 
 
 Communication
@@ -66,4 +79,9 @@ r_saveimg            		: sends back filename of saved image from cam or "Trying 
 * If a command such as "test" is sent but the next command "r_test" is sent too early (before the end of the detection), the response is "Still thinking".
 * Following a bad command, the response is "Unknown command".
 * Following a reset, the response is "Done".
+ 
+Adding commands
+===============
 
+Adding new commands should be fairly easy: use the the test command associated to the object DummyCommand as a template and look for "INSERT_HERE" comments in the files CommandProcessor.*.
+  

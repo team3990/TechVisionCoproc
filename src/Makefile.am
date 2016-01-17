@@ -14,7 +14,5 @@ bin_PROGRAMS = VisionCoproc testcoproc
 
 VisionCoproc_SOURCES = CommandProcessor.cpp CameraManager.cpp DummyCommand.cpp ImgSaveCommand.cpp LoggingService.cpp MessageDispatcher.cpp tinythread.cpp VisionCommand.cpp VisionCoprocessor.cpp
 
-VisionCoproc_SOURCES += OCVCapture.cpp
-
 testcoproc_SOURCES = testcoproc.cpp
 

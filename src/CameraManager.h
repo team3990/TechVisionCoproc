@@ -17,10 +17,6 @@
 #include <opencv2/opencv.hpp>
 #endif
 
-#ifndef USE_OPENCV_FOR_CAPTURE
-#include "OCVCapture.h"
-#endif
-
 #include "LoggingService.h"
 
 
@@ -58,12 +54,7 @@ private:
 
 #ifdef USE_OPENCV
 
-#ifdef USE_OPENCV_FOR_CAPTURE
 	cv::VideoCapture m_oVideoCap1, m_oVideoCap2;
-#else
-	OCVCapture m_oVideoCap1, m_oVideoCap2;
-#endif
-
 	cv::Mat m_oCurrentFrame1;
 	cv::Mat m_oCurrentFrame2;
 #endif
