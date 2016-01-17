@@ -14,16 +14,16 @@ Installation
 ============
 
 Move to the working directory. Copy the appropriate libzmq.a library located in zmq/lib/* to zmq/lib, e.g.:
-
+```
   $ cp zmq/lib/odroid/libzmq.a zmq/lib
-
+```
 Then, the following series of commands will build the server and a test tool.
-
+```
   $ mkdir build
   $ cd build
   $ cmake ..
   $ make
-
+```
 If everything went well, two binaries should be created: 
 - the coprocessor server: VisionCoproc
 - a test utility: testcoproc
@@ -32,7 +32,7 @@ Execution
 =========
 
 Launching VisionCoproc from the shell, we should get (modulo opencv camera warnings):
-
+```
 $ ./VisionCoproc
   T4K Vision Coprocessor v2016
   ----------------------
@@ -43,10 +43,10 @@ $ ./VisionCoproc
   Connecting with camera: Ok
   Hit Ctrl-C to quit
   Listening
-
+```
 
 If you open up another shell and cd to the build directory, you can use the test tool to verify that communication is ok:
-
+```
   $ ./testcoproc status
   T4K Vision Coprocessor Test Tool
   --------------------------------
@@ -59,7 +59,7 @@ If you open up another shell and cd to the build directory, you can use the test
    No job running
   Camera manager: 
    * camera 1 connected
-
+```
 
 Communication
 =============
