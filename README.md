@@ -73,6 +73,8 @@ Commands handled by the coprocessor so far:
 - r_test				: sends back "Test mode 1: result=pi"
 - r_saveimg            		: sends back filename of saved image from cam or "Trying to save empty image!" if no camera is connected.
 
+Additional notes
+================
 
 * Sending a command always initiates a response. Typical use:  roboRio sends "test", waits a bit and sends "r_test" to get the result.
 * More than one command can be processed at the same time, but they have to be different.
