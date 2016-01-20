@@ -45,7 +45,7 @@ $ ./VisionCoproc
   Listening
 ```
 
-If you open up another shell and cd to the build directory, you can use the test tool to verify that communication is ok:
+If you open another shell and cd to the build directory, you can use the test tool to verify that communication is ok:
 ```
   $ ./testcoproc status
   T4K Vision Coprocessor Test Tool
