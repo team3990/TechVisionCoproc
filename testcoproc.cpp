@@ -29,9 +29,11 @@
 int main (int argc, char *argv[])
 {
         std::cout << "T4K Vision Coprocessor Test Tool" << std::endl;
-	std::cout << "--------------------------------" << std::endl << std::endl; 
-        std::cout << "* using ZMQ v" << ZMQ_VERSION_MAJOR << "."; 
-        std::cout << ZMQ_VERSION_MINOR << std::endl << std::endl;
+	std::cout << "--------------------------------" << std::endl << std::endl;
+	int zmqmajor, zmqminor,zmqpatch;
+	zmq_version (&zmqmajor, &zmqminor, &zmqpatch); 
+        std::cout << "* using ZMQ v" << zmqmajor << "."; 
+        std::cout << zmqminor << std::endl << std::endl;
 
 
     if(argc!=2){

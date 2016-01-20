@@ -32,11 +32,15 @@ int main() {
 
 	std::cout << "T4K Vision Coprocessor v" << VERSION << std::endl; 
 	std::cout << "----------------------" << std::endl << std::endl;
+	
 	std::cout << "* Using OpenCV v" << CV_VERSION << std::endl;
 //	cout << "Major version : " << CV_MAJOR_VERSION << endl;
 //	cout << "Minor version : " << CV_MINOR_VERSION << endl;
-	std::cout << "* Using ZMQ v" << ZMQ_VERSION_MAJOR << ".";
-	std::cout << ZMQ_VERSION_MINOR << std::endl << std::endl;
+//
+	int zmqmajor, zmqminor,zmqpatch;
+	zmq_version (&zmqmajor, &zmqminor, &zmqpatch); 
+        std::cout << "* using ZMQ v" << zmqmajor << "."; 
+        std::cout << zmqminor << std::endl << std::endl;
 
 	CommandProcessor cmdprocessor;
 	MessageDispatcher dispatcher(&cmdprocessor);
