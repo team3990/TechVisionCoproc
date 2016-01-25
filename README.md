@@ -7,7 +7,7 @@ Prerequisites
 - g++ 
 - cmake 2.8 and higher
 - Optionnally, opencv and video4linux
-- The comm library zmq is in the subdir zmq. Default builds for RaspberryPi, Odroid and roboRio2016 are supplied. If you don't find your favorite platform, you will have to build libzmq yourself (and getting the c++ binding)
+- The comm library zmq is in the subdir zmq. Default builds for RaspberryPi, Odroid and roboRio2016 are supplied. For other platforms, you will have to build libzmq yourself (and get the c++ binding)
 
 
 Installation
@@ -67,10 +67,10 @@ Communication
 Commands handled by the coprocessor so far:
 
 - reset				: stops processing, destroys results
-- status				: returns internal status 
-- saveimg				: captures an image from camera and dumps it to disk   
+- status			: returns internal status 
+- saveimg			: captures an image from camera and dumps it to disk   
 - test				: executes a fake command 
-- r_test				: sends back "Test mode 1: result=pi"
+- r_test			: sends back "Output of dummy_command: result = 42"
 - r_saveimg            		: sends back filename of saved image from cam or "Trying to save empty image!" if no camera is connected.
 
 Additional notes
